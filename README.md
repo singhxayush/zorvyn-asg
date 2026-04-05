@@ -28,7 +28,7 @@ Create a `.env` file in the root directory. This project requires specific varia
 ```env
 PORT=8080
 APP_ENV=local
-DB_URL=finance.db
+DB_URL=finance_dashboard.db
 
 # Security
 JWT_SECRET=your_super_secret_key_here
