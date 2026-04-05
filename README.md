@@ -124,12 +124,10 @@ The system strictly enforces permissions based on three roles:
 - `cmd/api/main.go`: Application entry point.
 - `cmd/seed/main.go`: One-time script to initialize the Admin.
 - `internal/database/`: Database logic, raw SQL queries, and migrations.
-- `internal/server/`: Gin handlers, routes, and RBAC middleware and rate limiter.
+- `internal/server/`: Gin handlers, routes, RBAC middleware, and rate limiter.
+  - `*_test.go`: Comprehensive unit tests for handlers and middleware.
+  - `test_helpers.go`: Mock database implementation for testing.
 - `migrations/`: Versioned `.sql` files for schema evolution.
-
----
-
-Here is the updated **Features Implemented** section for your `README.md`. I have added the **Rate Limiting** feature to the list:
 
 ---
 
@@ -141,3 +139,51 @@ Here is the updated **Features Implemented** section for your `README.md`. I hav
 - **Secure Hashing**: User passwords are encrypted using `bcrypt` with a recommended cost factor.
 - **Rate Limiting**: Protects the API from brute-force and DDoS attacks using a per-IP Token Bucket limiter (5 req/s with a burst of 10).
 - **Cookie-based Auth**: Enhanced security via `HttpOnly` and `SameSite` cookies to prevent XSS-based token theft.
+
+---
+
+## 🧪 Testing
+
+Comprehensive unit tests are included to ensure code reliability and correctness. Test coverage includes:
+
+### Test Suites
+
+- **Auth Handler Tests** (`auth_handlers_test.go`): 10+ tests for login, refresh, and logout endpoints
+  - Success and error scenarios (invalid credentials, expired tokens, inactive users)
+  - Token generation and validation
+- **User Handler Tests** (`user_handlers_test.go`): 12+ tests for user management endpoints
+  - User creation, listing, role updates, status updates, and deletion
+  - Input validation and duplicate email detection
+- **Record Handler Tests** (`record_handlers_test.go`): 15+ tests for financial record operations
+  - CRUD operations (Create, Read, Update, Delete)
+  - Filtering and pagination
+  - Dashboard summary calculations
+- **Middleware Tests** (`middleware_test.go`): 13+ tests for authentication and rate limiting
+  - JWT token validation and role-based access control
+  - Rate limiting behavior (burst limits, recovery)
+  - Authorization edge cases
+
+### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run tests with short timeout (for CI/CD)
+make test-short
+
+# Generate coverage report
+make test-coverage
+
+# Generate HTML coverage report
+make test-coverage-html
+
+# Run tests for a specific package
+make test-pkg PKG=./internal/server
+```
+
+### Test Infrastructure
+
+- **Mock Database** (`test_helpers.go`): In-memory mock database implementation supporting all database operations
+- **70+ Total Tests**: Comprehensive coverage of all major features and edge cases
+- **No External Dependencies**: Tests run independently without requiring a live database
