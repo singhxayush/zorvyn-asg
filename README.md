@@ -2,6 +2,8 @@
 
 A logically structured Go backend built with the **Gin Framework** and **SQLite**. This system provides a financial dashboard API with Role-Based Access Control (RBAC), cookie-based JWT authentication, rate limiting for API spam protection and automated data migrations.
 
+📄 Postman API Docs: https://gist.github.com/singhxayush/84d1dddf8494acd9933540187b0dea49
+
 ## 🚀 Getting Started
 
 ### 1. Clone and Setup
