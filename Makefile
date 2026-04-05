@@ -25,8 +25,35 @@ run:
 
 # Test the application
 test:
-	@echo "Testing..."
+	@echo "Running all tests..."
 	@go test ./... -v
+
+# Run tests with coverage
+test-coverage:
+	@echo "Running tests with coverage..."
+	@go test ./... -v -coverprofile=coverage.out
+	@echo "Coverage report generated: coverage.out"
+
+# Generate HTML coverage report
+test-coverage-html: test-coverage
+	@echo "Generating HTML coverage report..."
+	@go tool cover -html=coverage.out -o coverage.html
+	@echo "HTML coverage report generated: coverage.html"
+
+# Run tests for a specific package
+test-pkg:
+	@if [ -z "$(PKG)" ]; then \
+		echo "Error: package path is required."; \
+		echo "Usage: make test-pkg PKG=./internal/server"; \
+		exit 1; \
+	fi
+	@echo "Running tests for $(PKG)..."
+	@go test $(PKG) -v
+
+# Run tests with short timeout
+test-short:
+	@echo "Running tests with short timeout..."
+	@go test ./... -v -short -timeout 10s
 
 # Clean the binary
 clean:
@@ -109,13 +136,23 @@ help:
 	@echo "Available targets:"
 	@echo "  build                Build the application into bin/ directory"
 	@echo "  run                  Run the application (using go run)"
-	@echo "  test                 Run tests"
-	@echo "  clean                Remove the bin/ directory and compiled binary"
-	@echo "  watch                Run the application with live reload (air)"
+	@echo ""
+	@echo "Testing:"
+	@echo "  test                 Run all tests with verbose output"
+	@echo "  test-short           Run tests with short timeout (10s)"
+	@echo "  test-coverage        Run tests and generate coverage report"
+	@echo "  test-coverage-html   Generate HTML coverage report"
+	@echo "  test-pkg PKG=...     Run tests for specific package (e.g., make test-pkg PKG=./internal/server)"
+	@echo ""
+	@echo "Database and Init:"
 	@echo "  db-migrate-up        Run all pending database migrations"
 	@echo "  db-migrate-down      Rollback the last database migration"
 	@echo "  db-migrate-create    Create a new migration file (e.g., make db-migrate-create name=init)"
-	@eco "   seed                 Initialise superadmin"
+	@echo "  seed                 Initialise superadmin"
+	@echo ""
+	@echo "Other:"
+	@echo "  clean                Remove the bin/ directory and compiled binary"
+	@echo "  watch                Run the application with live reload (air)"
 	@echo "  help                 Show this help message"
 
 .PHONY: all build run test clean watch check-migrate db-migrate-up db-migrate-down db-migrate-create help
